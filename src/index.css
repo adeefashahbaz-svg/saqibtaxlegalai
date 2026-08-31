@@ -1,1 +1,25 @@
 @import "tailwindcss";
+
+@layer base {
+  /* Global form input visibility and high-contrast text defaults */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="submit"]):not([type="button"]):not([type="reset"]),
+  textarea,
+  select {
+    color: #0f172a !important;
+    background-color: #ffffff;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #64748b !important;
+    opacity: 1;
+  }
+
+  input:focus,
+  textarea:focus,
+  select:focus {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+    outline: none;
+  }
+}

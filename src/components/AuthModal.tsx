@@ -242,14 +242,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   Full Name & Title
                 </label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                  <User className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
                   <input
+                    id="auth-input-fullname"
                     type="text"
                     required
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="e.g. Adv. Muhammad Ali / Tariq Khan"
-                    className="w-full pl-9 pr-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                    className="w-full pl-9 pr-3 py-2 text-xs font-medium text-slate-900 bg-white border border-slate-300 rounded-lg placeholder:text-slate-500 focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 focus:text-slate-900 focus:bg-white outline-none shadow-xs"
                   />
                 </div>
               </div>
@@ -260,14 +261,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 Email Address
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
                 <input
+                  id="auth-input-email"
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@organization.com"
-                  className="w-full pl-9 pr-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                  className="w-full pl-9 pr-3 py-2 text-xs font-medium text-slate-900 bg-white border border-slate-300 rounded-lg placeholder:text-slate-500 focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 focus:text-slate-900 focus:bg-white outline-none shadow-xs"
                 />
               </div>
             </div>
@@ -277,14 +279,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 Password
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+                <Lock className="w-4 h-4 text-slate-500 absolute left-3 top-2.5" />
                 <input
+                  id="auth-input-password"
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full pl-9 pr-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
+                  className="w-full pl-9 pr-3 py-2 text-xs font-medium text-slate-900 bg-white border border-slate-300 rounded-lg placeholder:text-slate-500 focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 focus:text-slate-900 focus:bg-white outline-none shadow-xs"
                 />
               </div>
             </div>
@@ -296,9 +299,10 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                     Tax Role & Purpose
                   </label>
                   <select
+                    id="auth-select-role"
                     value={role}
                     onChange={(e) => setRole(e.target.value as UserRole)}
-                    className="w-full px-3 py-2 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none bg-white font-medium"
+                    className="w-full px-3 py-2 text-xs font-medium text-slate-900 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 outline-none shadow-xs"
                   >
                     <option value="taxpayer">Individual Salaried / Business Taxpayer</option>
                     <option value="corporate_client">Corporate Client / CFO / Company</option>
@@ -312,11 +316,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       NTN / CNIC (Optional)
                     </label>
                     <input
+                      id="auth-input-ntn"
                       type="text"
                       value={ntnNumber}
                       onChange={(e) => setNtnNumber(e.target.value)}
                       placeholder="e.g. 7193840-1"
-                      className="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                      className="w-full px-2.5 py-1.5 text-xs font-medium text-slate-900 bg-white border border-slate-300 rounded-lg placeholder:text-slate-500 focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 focus:text-slate-900 focus:bg-white outline-none shadow-xs"
                     />
                   </div>
                   <div>
@@ -324,11 +329,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                       Company (Optional)
                     </label>
                     <input
+                      id="auth-input-company"
                       type="text"
                       value={organization}
                       onChange={(e) => setOrganization(e.target.value)}
                       placeholder="e.g. Textiles Ltd"
-                      className="w-full px-2.5 py-1.5 text-xs border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 outline-none"
+                      className="w-full px-2.5 py-1.5 text-xs font-medium text-slate-900 bg-white border border-slate-300 rounded-lg placeholder:text-slate-500 focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 focus:text-slate-900 focus:bg-white outline-none shadow-xs"
                     />
                   </div>
                 </div>

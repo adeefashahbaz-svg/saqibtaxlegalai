@@ -887,7 +887,7 @@ export const BankPaymentModal: React.FC<BankPaymentModalProps> = ({
                         type="date"
                         value={paymentDate}
                         onChange={(e) => setPaymentDate(e.target.value)}
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-900 placeholder:text-slate-500 focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 focus:text-slate-900 focus:bg-white outline-none"
                         required
                       />
                     </div>
@@ -903,7 +903,7 @@ export const BankPaymentModal: React.FC<BankPaymentModalProps> = ({
                         value={trxId}
                         onChange={(e) => setTrxId(e.target.value)}
                         placeholder="e.g. MEZN-10294857 or TRX983210"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden font-mono"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-900 placeholder:text-slate-500 focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 focus:text-slate-900 focus:bg-white outline-none font-mono"
                         required
                       />
                     </div>
@@ -919,7 +919,7 @@ export const BankPaymentModal: React.FC<BankPaymentModalProps> = ({
                         value={accountHolderName}
                         onChange={(e) => setAccountHolderName(e.target.value)}
                         placeholder="Full Name as on Bank / JazzCash"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-900 placeholder:text-slate-500 focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 focus:text-slate-900 focus:bg-white outline-none"
                         required
                       />
                     </div>
@@ -978,7 +978,7 @@ export const BankPaymentModal: React.FC<BankPaymentModalProps> = ({
                         value={notes}
                         onChange={(e) => setNotes(e.target.value)}
                         placeholder="e.g. Paid from corporate account / NTN reference"
-                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-hidden"
+                        className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white text-xs font-medium text-slate-900 placeholder:text-slate-500 focus:ring-2 focus:ring-emerald-600 focus:border-emerald-600 focus:text-slate-900 focus:bg-white outline-none"
                       />
                     </div>
                   </div>
