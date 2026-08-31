@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <title>SaqibTax Legal AI</title>
+    <meta name="description" content="Comprehensive Pakistani tax legal AI portal featuring Real Estate & Property Tax (Sec 7E, 236C, 236K, 37A), Provincial Sales Tax on Services (PRA, SRB, KPRA, BRA, ICT), Sales Tax Act 1990 engine, Income Tax Ordinance 2001, Workers Welfare Fund 1971, Appellate Tribunal Rules, Case Laws archive, FBR SROs, Custom Tariff HS code lookup, Legal Dictionary, Tax Rates matrices, and Iris 2.0 Returns Assistant." />
+    
+    <!-- PWA & Mobile Viewport Tags -->
+    <meta name="theme-color" content="#0f172a" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="application-name" content="SaqibTax Legal AI" />
+    <meta name="apple-mobile-web-app-title" content="SaqibTax" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Web App Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Standard Favicon & Touch Icons -->
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="192x192" href="/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="512x512" href="/icon-512.png" />
+
+    <!-- Social & Open Graph Metadata -->
+    <meta property="og:title" content="SaqibTax Legal AI" />
+    <meta property="og:description" content="Comprehensive Pakistani tax legal AI portal featuring Real Estate & Property Tax, Sales Tax Act 1990, Income Tax Ordinance 2001, Case Laws archive, and FBR tax suite." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/icon.svg" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="SaqibTax Legal AI" />
+    <meta name="twitter:description" content="Comprehensive Pakistani tax legal AI portal featuring Sales Tax Act 1990, Income Tax Ordinance 2001, and Case Laws archive." />
+    <meta name="twitter:image" content="/icon.svg" />
+  </head>
+  <body class="bg-slate-950 text-slate-100 antialiased selection:bg-emerald-500 selection:text-white">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- PWA Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker
+            .register('/sw.js', { scope: '/' })
+            .then((registration) => {
+              console.log('[PWA] Service Worker registered with scope:', registration.scope);
+
+              // Check for SW updates
+              registration.onupdatefound = () => {
+                const installingWorker = registration.installing;
+                if (installingWorker) {
+                  installingWorker.onstatechange = () => {
+                    if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                      console.log('[PWA] New content is available; please refresh.');
+                    }
+                  };
+                }
+              };
+            })
+            .catch((error) => {
+              console.error('[PWA] Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "SaqibTax Legal AI",
+  "description": "Comprehensive Pakistani tax legal AI portal featuring Real Estate & Property Tax (Sec 7E, 236C, 236K, 37A), Provincial Sales Tax on Services (PRA, SRB, KPRA, BRA, ICT), Sales Tax Act 1990 engine, Income Tax Ordinance 2001, Workers Welfare Fund 1971, Appellate Tribunal Rules, Case Laws archive, FBR SROs, Custom Tariff HS code lookup, Legal Dictionary, Tax Rates matrices, and Iris 2.0 Returns Assistant.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

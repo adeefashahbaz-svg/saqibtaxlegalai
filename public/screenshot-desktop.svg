@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" width="1280" height="720">
+  <defs>
+    <linearGradient id="deskBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#deskBg)" />
+  
+  <!-- App Header Bar -->
+  <rect x="0" y="0" width="1280" height="60" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+  <circle cx="35" cy="30" r="16" fill="#10b981" />
+  <text x="65" y="36" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="bold" font-size="18">SaqibTax Legal AI - Pakistan Statutory & Tax Intelligence</text>
+  <rect x="1100" y="16" width="150" height="28" rx="6" fill="#10b981" />
+  <text x="1175" y="34" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="600" font-size="12" text-anchor="middle">Active Filer Mode</text>
+  
+  <!-- Left Sidebar -->
+  <rect x="0" y="60" width="240" height="660" fill="#0b1329" stroke="#1e293b" stroke-width="1" />
+  <rect x="16" y="80" width="208" height="36" rx="8" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1" />
+  <text x="32" y="103" fill="#34d399" font-family="system-ui, sans-serif" font-weight="600" font-size="14">AI Legal Advisor</text>
+  
+  <text x="32" y="150" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="14">Sales Tax Act 1990</text>
+  <text x="32" y="190" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="14">Income Tax 2001</text>
+  <text x="32" y="230" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="14">Case Law Archive</text>
+  <text x="32" y="270" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="14">Property Tax (Sec 7E)</text>
+  <text x="32" y="310" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="14">FBR SRO Finder</text>
+
+  <!-- Main Content Dashboard -->
+  <g transform="translate(270, 85)">
+    <!-- Metric Cards -->
+    <rect x="0" y="0" width="300" height="120" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <text x="20" y="35" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="13">Income Tax Slabs</text>
+    <text x="20" y="70" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="bold" font-size="24">Finance Act 2025/26</text>
+    <text x="20" y="98" fill="#10b981" font-family="system-ui, sans-serif" font-size="12">✓ Live Statutory Reconciliation</text>
+
+    <rect x="330" y="0" width="300" height="120" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <text x="350" y="35" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="13">Sales Tax Engine</text>
+    <text x="350" y="70" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="bold" font-size="24">18% Standard + SROs</text>
+    <text x="350" y="98" fill="#38bdf8" font-family="system-ui, sans-serif" font-size="12">✓ 8B Input Apportionment</text>
+
+    <rect x="660" y="0" width="300" height="120" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <text x="680" y="35" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="13">Appellate Case Laws</text>
+    <text x="680" y="70" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="bold" font-size="24">Supreme Court & ATIR</text>
+    <text x="680" y="98" fill="#a855f7" font-family="system-ui, sans-serif" font-size="12">✓ 2025 PTD / SCMR Grounding</text>
+
+    <!-- AI Legal Workspace Box -->
+    <rect x="0" y="150" width="960" height="440" rx="14" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+    <text x="30" y="195" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="bold" font-size="18">SaqibTax AI Legal Research & Notice Drafter</text>
+    <rect x="30" y="220" width="900" height="140" rx="8" fill="#1e293b" fill-opacity="0.6" stroke="#334155" stroke-width="1" />
+    <text x="50" y="255" fill="#34d399" font-family="system-ui, sans-serif" font-weight="600" font-size="14">Query: Analyze Section 122(5A) erroneous & prejudicial assessment threshold with recent High Court precedents.</text>
+    <text x="50" y="285" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="13">AI Response: Under Section 122(5A), the Commissioner must satisfy twin statutory conditions: the order must be BOTH erroneous and prejudicial to the interest of revenue...</text>
+    <text x="50" y="315" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="12">Citations: 2024 PTD 112, 2023 SCMR 890, Income Tax Ordinance 2001 Sec 122(5A).</text>
+
+    <rect x="30" y="520" width="760" height="44" rx="8" fill="#1e293b" stroke="#475569" stroke-width="1" />
+    <text x="50" y="547" fill="#64748b" font-family="system-ui, sans-serif" font-size="14">Ask any Pakistan tax law question or enter FBR notice details...</text>
+    <rect x="805" y="520" width="125" height="44" rx="8" fill="#10b981" />
+    <text x="867" y="547" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="bold" font-size="14" text-anchor="middle">Generate</text>
+  </g>
+</svg>

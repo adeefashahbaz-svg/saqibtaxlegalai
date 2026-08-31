@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 844" width="390" height="844">
+  <defs>
+    <linearGradient id="mobBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1120" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+  </defs>
+  <rect width="390" height="844" fill="url(#mobBg)" />
+  
+  <!-- Status bar & Header -->
+  <rect x="0" y="0" width="390" height="70" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+  <circle cx="35" cy="42" r="14" fill="#10b981" />
+  <text x="60" y="47" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="bold" font-size="16">SaqibTax Legal AI</text>
+  <circle cx="355" cy="42" r="12" fill="#1e293b" />
+
+  <!-- Mobile Banner -->
+  <rect x="16" y="86" width="358" height="90" rx="14" fill="#10b981" fill-opacity="0.15" stroke="#10b981" stroke-width="1" />
+  <text x="32" y="116" fill="#34d399" font-family="system-ui, sans-serif" font-weight="bold" font-size="16">Pakistan Tax Intelligence</text>
+  <text x="32" y="138" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="12">Income Tax 2001 • Sales Tax 1990 • 7E • Case Laws</text>
+  <text x="32" y="158" fill="#6ee7b7" font-family="system-ui, sans-serif" font-weight="600" font-size="11">✓ Updated for Tax Year 2025/26</text>
+
+  <!-- Quick Action Grid -->
+  <g transform="translate(16, 190)">
+    <rect x="0" y="0" width="172" height="85" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <text x="14" y="30" fill="#34d399" font-family="system-ui, sans-serif" font-weight="bold" font-size="14">AI Advisor</text>
+    <text x="14" y="52" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11">Instant Legal Advice</text>
+    <text x="14" y="70" fill="#10b981" font-family="system-ui, sans-serif" font-size="10">Gemini 2.5 Tax Pro</text>
+
+    <rect x="186" y="0" width="172" height="85" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <text x="200" y="30" fill="#38bdf8" font-family="system-ui, sans-serif" font-weight="bold" font-size="14">Tax Calculators</text>
+    <text x="200" y="52" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11">Salary, AOP, Sec 7E</text>
+    <text x="200" y="70" fill="#38bdf8" font-family="system-ui, sans-serif" font-size="10">2026 Slabs Ready</text>
+
+    <rect x="0" y="98" width="172" height="85" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <text x="14" y="128" fill="#a855f7" font-family="system-ui, sans-serif" font-weight="bold" font-size="14">Notice Drafter</text>
+    <text x="14" y="150" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11">Sec 122 / 161 Rejoinders</text>
+    <text x="14" y="168" fill="#c084fc" font-family="system-ui, sans-serif" font-size="10">Legal Defense Kit</text>
+
+    <rect x="186" y="98" width="172" height="85" rx="12" fill="#1e293b" stroke="#334155" stroke-width="1" />
+    <text x="200" y="128" fill="#f59e0b" font-family="system-ui, sans-serif" font-weight="bold" font-size="14">Case Law Base</text>
+    <text x="200" y="150" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="11">SCMR, PTD & ATIR</text>
+    <text x="200" y="168" fill="#fcd34d" font-family="system-ui, sans-serif" font-size="10">Statute-Linked</text>
+  </g>
+
+  <!-- Live Chat Feed Preview -->
+  <g transform="translate(16, 400)">
+    <rect x="0" y="0" width="358" height="340" rx="14" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+    <text x="16" y="30" fill="#ffffff" font-family="system-ui, sans-serif" font-weight="bold" font-size="14">Live Legal Query</text>
+    
+    <rect x="16" y="48" width="326" height="55" rx="8" fill="#1e293b" />
+    <text x="28" y="70" fill="#34d399" font-family="system-ui, sans-serif" font-size="12" font-weight="600">What is the holding period tax on plots under 37(1A)?</text>
+    
+    <rect x="16" y="115" width="326" height="150" rx="8" fill="#064e3b" fill-opacity="0.3" stroke="#059669" stroke-width="1" />
+    <text x="28" y="140" fill="#ffffff" font-family="system-ui, sans-serif" font-size="12" font-weight="600">Under Finance Act 2025/2026:</text>
+    <text x="28" y="165" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="11">• Acquired post July 1, 2024: 15% flat for ATL filers.</text>
+    <text x="28" y="190" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="11">• Acquired prior: 0% to 15% tiered up to 6 years holding.</text>
+    <text x="28" y="215" fill="#cbd5e1" font-family="system-ui, sans-serif" font-size="11">• Advance tax 236C (3% filer) is fully adjustable.</text>
+    <text x="28" y="245" fill="#a7f3d0" font-family="system-ui, sans-serif" font-size="10">Citation: Section 37(1A), First Sched Div VIII</text>
+  </g>
+
+  <!-- Bottom Navigation Bar -->
+  <rect x="0" y="774" width="390" height="70" fill="#0f172a" stroke="#1e293b" stroke-width="1" />
+  <circle cx="65" cy="805" r="16" fill="#10b981" fill-opacity="0.2" />
+  <text x="65" y="810" fill="#34d399" font-family="system-ui, sans-serif" font-size="10" text-anchor="middle">Advisor</text>
+  <text x="150" y="810" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="10" text-anchor="middle">Statutes</text>
+  <text x="235" y="810" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="10" text-anchor="middle">Calculator</text>
+  <text x="320" y="810" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="10" text-anchor="middle">Library</text>
+</svg>
