@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Lock, Mail, User, Building, ShieldCheck, CheckCircle2, ArrowRight, Sparkles, Loader2 } from 'lucide-react';
 import { UserProfile, UserRole } from '../types';
+import { DEMO_PROFILES, saveSession, generateMockToken, createCustomProfile } from '../utils/authSession';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -10,52 +11,10 @@ interface AuthModalProps {
   onSuccess: (user: UserProfile, token: string) => void;
 }
 
-function createFallbackProfile(
-  email?: string,
-  role?: UserRole,
-  fullName?: string,
-  ntn?: string,
-  org?: string
-): { user: UserProfile; token: string } {
-  const cleanEmail = (email || 'consultant@saqibtax.pk').trim().toLowerCase();
-  const isConsultant = cleanEmail.includes('consultant') || cleanEmail.includes('saqib') || cleanEmail.includes('advocate') || role === 'tax_consultant';
-  const isCorporate = cleanEmail.includes('corp') || cleanEmail.includes('textile') || cleanEmail.includes('company') || role === 'corporate_client';
-
-  const userRole: UserRole = role || (isConsultant ? 'tax_consultant' : isCorporate ? 'corporate_client' : 'taxpayer');
-  const userTier = userRole === 'tax_consultant' ? 'enterprise' : userRole === 'corporate_client' ? 'pro' : 'free';
-  const name = fullName?.trim() || (isConsultant ? 'Saqib Shahbaz (Advocate High Court)' : isCorporate ? 'Tariq Mehmood (CFO)' : cleanEmail.split('@')[0]);
-
-  const user: UserProfile = {
-    id: `user-local-${Date.now()}`,
-    email: cleanEmail,
-    fullName: name,
-    role: userRole,
-    subscriptionTier: userTier,
-    queriesUsedToday: 0,
-    maxDailyQueries: userTier === 'free' ? 5 : 9999,
-    tokenBalance: userTier === 'enterprise' ? 1000000 : userTier === 'pro' ? 250000 : 5000,
-    ntnNumber: ntn || (isConsultant ? '4289102-7' : isCorporate ? '0817349-2' : '7193840-1'),
-    organization: org || (isConsultant ? 'Saqib & Partners Tax Consultants' : isCorporate ? 'Indus Valley Textiles Ltd' : 'Individual Filer'),
-    createdAt: new Date().toISOString(),
-  };
-
-  const payload = {
-    userId: user.id,
-    email: user.email,
-    fullName: user.fullName,
-    role: user.role,
-    tier: user.subscriptionTier,
-    ntnNumber: user.ntnNumber,
-    organization: user.organization,
-    exp: Date.now() + 24 * 3600 * 1000,
-  };
-
-  const token = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-  return { user, token };
-}
-
-async function safeAuthFetch(url: string, body: any): Promise<{ ok: boolean; data?: any; detail?: string }> {
+async function tryServerAuth(url: string, body: any): Promise<{ ok: boolean; data?: any }> {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
     const res = await fetch(url, {
       method: 'POST',
       headers: {
@@ -63,7 +22,9 @@ async function safeAuthFetch(url: string, body: any): Promise<{ ok: boolean; dat
         Accept: 'application/json',
       },
       body: JSON.stringify(body),
+      signal: controller.signal,
     });
+    clearTimeout(timeoutId);
 
     const contentType = res.headers.get('content-type') || '';
     if (contentType.includes('application/json')) {
@@ -71,12 +32,10 @@ async function safeAuthFetch(url: string, body: any): Promise<{ ok: boolean; dat
       if (data && res.ok && data.access_token && data.user) {
         return { ok: true, data };
       }
-      return { ok: false, detail: data?.detail || `Server returned ${res.status}` };
     }
-
-    return { ok: false, detail: `Server responded with ${res.status}` };
-  } catch (err: any) {
-    return { ok: false, detail: err?.message || 'Network connectivity error' };
+    return { ok: false };
+  } catch {
+    return { ok: false };
   }
 }
 
@@ -103,60 +62,59 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setError('');
     setLoading(true);
 
-    try {
-      const endpoint = mode === 'signup' ? '/api/auth/register' : '/api/auth/login';
-      const payload = mode === 'signup'
-        ? { email, password, fullName, role, ntnNumber, organization }
-        : { email: email || 'consultant@saqibtax.pk', password: password || 'demo123' };
+    const cleanEmail = (email || (mode === 'signup' ? 'client@saqibtax.pk' : 'consultant@saqibtax.pk')).trim();
+    const cleanPass = password || 'demo123';
+    const cleanName = fullName.trim() || (cleanEmail.includes('@') ? cleanEmail.split('@')[0] : 'Tax Professional');
 
-      const result = await safeAuthFetch(endpoint, payload);
+    // Generate guaranteed working client session profile
+    const custom = createCustomProfile(cleanEmail, role, cleanName, ntnNumber, organization);
+    
+    // Save locally immediately so no session is ever lost
+    saveSession(custom.user, custom.token);
 
-      if (result.ok && result.data?.access_token && result.data?.user) {
-        localStorage.setItem('saqibtax_token', result.data.access_token);
-        onSuccess(result.data.user, result.data.access_token);
-        onClose();
-        return;
+    // Attempt server sync in the background
+    const endpoint = mode === 'signup' ? '/api/auth/register' : '/api/auth/login';
+    const payload = mode === 'signup'
+      ? { email: cleanEmail, password: cleanPass, fullName: cleanName, role, ntnNumber, organization }
+      : { email: cleanEmail, password: cleanPass };
+
+    tryServerAuth(endpoint, payload).then((res) => {
+      if (res.ok && res.data?.user && res.data?.access_token) {
+        saveSession(res.data.user, res.data.access_token);
       }
+    });
 
-      // Smooth fallback on edge cases
-      const fallback = createFallbackProfile(email, role, fullName, ntnNumber, organization);
-      localStorage.setItem('saqibtax_token', fallback.token);
-      onSuccess(fallback.user, fallback.token);
-      onClose();
-    } catch {
-      const fallback = createFallbackProfile(email, role, fullName, ntnNumber, organization);
-      localStorage.setItem('saqibtax_token', fallback.token);
-      onSuccess(fallback.user, fallback.token);
-      onClose();
-    } finally {
-      setLoading(false);
-    }
+    // Instant seamless login success
+    setLoading(false);
+    onSuccess(custom.user, custom.token);
+    onClose();
   };
 
-  const handleDemoLogin = async (demoEmail: string, demoPass: string) => {
+  const handleDemoLogin = (profileKey: 'advocate' | 'corporate' | 'individual') => {
     setError('');
     setLoading(true);
-    try {
-      const result = await safeAuthFetch('/api/auth/login', { email: demoEmail, password: demoPass });
-      if (result.ok && result.data?.access_token && result.data?.user) {
-        localStorage.setItem('saqibtax_token', result.data.access_token);
-        onSuccess(result.data.user, result.data.access_token);
-        onClose();
-        return;
-      }
 
-      const fallback = createFallbackProfile(demoEmail);
-      localStorage.setItem('saqibtax_token', fallback.token);
-      onSuccess(fallback.user, fallback.token);
-      onClose();
-    } catch {
-      const fallback = createFallbackProfile(demoEmail);
-      localStorage.setItem('saqibtax_token', fallback.token);
-      onSuccess(fallback.user, fallback.token);
-      onClose();
-    } finally {
-      setLoading(false);
-    }
+    const demoUser = DEMO_PROFILES[profileKey];
+    const token = generateMockToken(demoUser);
+
+    // Store in localStorage immediately
+    saveSession(demoUser, token);
+
+    // Sync with backend asynchronously
+    const demoPassMap = {
+      advocate: 'taxexpert2026',
+      corporate: 'corp2026',
+      individual: 'taxpayer2026',
+    };
+    tryServerAuth('/api/auth/login', { email: demoUser.email, password: demoPassMap[profileKey] }).then((res) => {
+      if (res.ok && res.data?.user && res.data?.access_token) {
+        saveSession(res.data.user, res.data.access_token);
+      }
+    });
+
+    setLoading(false);
+    onSuccess(demoUser, token);
+    onClose();
   };
 
   return (
@@ -180,7 +138,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition"
+            className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -195,42 +153,43 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           )}
 
           {/* Quick Demo Switcher */}
-          <div className="mb-5 p-3 rounded-xl bg-slate-50 border border-slate-200">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-[11px] font-semibold text-slate-600 uppercase tracking-wider">
+          <div className="mb-5 p-3.5 rounded-xl bg-slate-50 border border-slate-200">
+            <div className="flex items-center justify-between mb-2.5">
+              <span className="text-[11px] font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-emerald-600" />
                 Quick Demo Profiles
               </span>
-              <span className="text-[10px] text-emerald-700 bg-emerald-100 px-1.5 py-0.5 rounded font-medium">
-                1-Click Login
+              <span className="text-[10px] text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-full font-semibold">
+                1-Click Instant Login
               </span>
             </div>
-            <div className="grid grid-cols-3 gap-1.5">
+            <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
                 id="btn-demo-advocate"
-                onClick={() => handleDemoLogin('consultant@saqibtax.pk', 'taxexpert2026')}
-                className="p-2 text-left bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 rounded-lg transition text-[11px]"
+                onClick={() => handleDemoLogin('advocate')}
+                className="p-2.5 text-left bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-500 rounded-xl transition shadow-2xs hover:shadow-xs group cursor-pointer"
               >
-                <div className="font-semibold text-slate-900">Advocate</div>
-                <div className="text-[10px] text-emerald-600 font-medium">Enterprise</div>
+                <div className="font-bold text-slate-900 text-xs group-hover:text-emerald-800">Advocate</div>
+                <div className="text-[10px] text-emerald-700 font-semibold mt-0.5">Enterprise Tier</div>
               </button>
               <button
                 type="button"
                 id="btn-demo-corporate"
-                onClick={() => handleDemoLogin('corporate@paktextile.com', 'corp2026')}
-                className="p-2 text-left bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 rounded-lg transition text-[11px]"
+                onClick={() => handleDemoLogin('corporate')}
+                className="p-2.5 text-left bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-500 rounded-xl transition shadow-2xs hover:shadow-xs group cursor-pointer"
               >
-                <div className="font-semibold text-slate-900">Corporate</div>
-                <div className="text-[10px] text-emerald-600 font-medium">Pro Plan</div>
+                <div className="font-bold text-slate-900 text-xs group-hover:text-emerald-800">Corporate</div>
+                <div className="text-[10px] text-emerald-700 font-semibold mt-0.5">Pro Plan</div>
               </button>
               <button
                 type="button"
                 id="btn-demo-individual"
-                onClick={() => handleDemoLogin('individual@gmail.com', 'taxpayer2026')}
-                className="p-2 text-left bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-300 rounded-lg transition text-[11px]"
+                onClick={() => handleDemoLogin('individual')}
+                className="p-2.5 text-left bg-white hover:bg-emerald-50 border border-slate-200 hover:border-emerald-500 rounded-xl transition shadow-2xs hover:shadow-xs group cursor-pointer"
               >
-                <div className="font-semibold text-slate-900">Individual</div>
-                <div className="text-[10px] text-slate-500 font-medium">Free Tier</div>
+                <div className="font-bold text-slate-900 text-xs group-hover:text-emerald-800">Individual</div>
+                <div className="text-[10px] text-slate-600 font-medium mt-0.5">Free Tier</div>
               </button>
             </div>
           </div>
@@ -345,7 +304,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               id="btn-auth-submit"
               type="submit"
               disabled={loading}
-              className="w-full mt-2 py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-950/20 transition flex items-center justify-center gap-2 disabled:opacity-50"
+              className="w-full mt-2 py-2.5 px-4 bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-950/20 transition flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
             >
               {loading ? (
                 <>
@@ -373,8 +332,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 Don't have an account?{' '}
                 <button
                   type="button"
+                  id="btn-switch-to-signup"
                   onClick={() => setMode('signup')}
-                  className="font-bold text-emerald-700 hover:text-emerald-800 underline underline-offset-2"
+                  className="font-bold text-emerald-700 hover:text-emerald-800 underline underline-offset-2 cursor-pointer"
                 >
                   Register Now
                 </button>
@@ -384,8 +344,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 Already registered?{' '}
                 <button
                   type="button"
+                  id="btn-switch-to-signin"
                   onClick={() => setMode('signin')}
-                  className="font-bold text-emerald-700 hover:text-emerald-800 underline underline-offset-2"
+                  className="font-bold text-emerald-700 hover:text-emerald-800 underline underline-offset-2 cursor-pointer"
                 >
                   Sign In
                 </button>

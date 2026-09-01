@@ -26,11 +26,15 @@ import { LegalNoticeModal } from './components/LegalNoticeModal';
 import { ClientPrivacyModal } from './components/ClientPrivacyModal';
 import { getPrivacySettings, savePrivacySettings } from './utils/cryptoStorage';
 import { UserProfile, SubscriptionTier } from './types';
+import { loadSession, saveSession, clearSession, DEMO_PROFILES, generateMockToken } from './utils/authSession';
 
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<string>('chat');
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(() => {
+    const existing = loadSession();
+    return existing ? existing.user : null;
+  });
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
@@ -49,33 +53,16 @@ export default function App() {
 
   // Verify auth session on load
   useEffect(() => {
-    const token = localStorage.getItem('saqibtax_token');
-    if (token) {
-      fetchUserProfile(token);
+    const existing = loadSession();
+    if (existing) {
+      setUser(existing.user);
+      fetchUserProfile(existing.token);
     } else {
-      // Default demo profile for initial exploration
-      setUser({
-        id: 'user-demo-1',
-        email: 'consultant@saqibtax.pk',
-        fullName: 'Saqib Shahbaz (Advocate High Court)',
-        role: 'tax_consultant',
-        subscriptionTier: 'enterprise',
-        queriesUsedToday: 3,
-        maxDailyQueries: 9999,
-        tokenBalance: 1000000,
-        ntnNumber: '4289102-7',
-        organization: 'Saqib & Partners Tax Consultants',
-        createdAt: new Date().toISOString(),
-      });
-      // Store default demo token
-      const defaultToken = btoa(unescape(encodeURIComponent(JSON.stringify({
-        userId: 'user-demo-1',
-        email: 'consultant@saqibtax.pk',
-        role: 'tax_consultant',
-        tier: 'enterprise',
-        exp: Date.now() + 24 * 3600 * 1000,
-      }))));
-      localStorage.setItem('saqibtax_token', defaultToken);
+      // First visit initialization: Advocate Enterprise profile
+      const defaultUser = DEMO_PROFILES.advocate;
+      const defaultToken = generateMockToken(defaultUser);
+      saveSession(defaultUser, defaultToken);
+      setUser(defaultUser);
     }
   }, []);
 
@@ -92,35 +79,12 @@ export default function App() {
         const userData = await res.json().catch(() => null);
         if (userData && userData.email) {
           setUser(userData);
+          saveSession(userData, authToken);
           return;
         }
-      }
-      
-      // Fallback: decode local token payload to avoid session loss in preview
-      try {
-        const raw = decodeURIComponent(escape(atob(authToken)));
-        const parsed = JSON.parse(raw);
-        if (parsed && parsed.email) {
-          setUser({
-            id: parsed.userId || 'user-demo-1',
-            email: parsed.email,
-            fullName: parsed.fullName || (parsed.role === 'tax_consultant' ? 'Saqib Shahbaz (Advocate High Court)' : parsed.role === 'corporate_client' ? 'Tariq Mehmood (CFO)' : 'Pakistani Taxpayer'),
-            role: parsed.role || 'tax_consultant',
-            subscriptionTier: parsed.tier || 'enterprise',
-            queriesUsedToday: 0,
-            maxDailyQueries: 9999,
-            tokenBalance: parsed.tier === 'enterprise' ? 1000000 : parsed.tier === 'pro' ? 250000 : 5000,
-            ntnNumber: parsed.ntnNumber || '4289102-7',
-            organization: parsed.organization || 'Saqib & Partners Tax Consultants',
-            createdAt: new Date().toISOString(),
-          });
-          return;
-        }
-      } catch {
-        // Continue to default
       }
     } catch (err) {
-      console.warn('Backend /api/auth/me check, applying local session:', err);
+      console.warn('Backend /api/auth/me check, local session active:', err);
     }
   };
 
@@ -130,23 +94,28 @@ export default function App() {
   };
 
   const handleAuthSuccess = (authenticatedUser: UserProfile, token: string) => {
+    saveSession(authenticatedUser, token);
     setUser(authenticatedUser);
     setAuthModalOpen(false);
   };
 
   const handleSignOut = () => {
-    localStorage.removeItem('saqibtax_token');
+    clearSession();
     setUser(null);
     handleOpenAuth('signin');
   };
 
   const handleUpdateTier = (newTier: SubscriptionTier) => {
     if (user) {
-      setUser({
+      const updatedUser: UserProfile = {
         ...user,
         subscriptionTier: newTier,
         maxDailyQueries: newTier === 'free' ? 5 : 9999,
-      });
+        tokenBalance: newTier === 'enterprise' ? 1000000 : newTier === 'pro' ? 250000 : 5000,
+      };
+      const token = localStorage.getItem('saqibtax_token') || generateMockToken(updatedUser);
+      saveSession(updatedUser, token);
+      setUser(updatedUser);
     }
   };
 
