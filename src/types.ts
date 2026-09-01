@@ -1,4 +1,4 @@
-export type UserRole = 'taxpayer' | 'corporate_client' | 'tax_consultant';
+export type UserRole = 'taxpayer' | 'corporate_client' | 'tax_consultant' | 'admin';
 
 export type SubscriptionTier = 'free' | 'pro' | 'enterprise';
 
