@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { Sidebar } from './components/Sidebar';
 import { AuthModal } from './components/AuthModal';
+import { AdminAuthModal } from './components/AdminAuthModal';
 import { ChatView } from './components/ChatView';
 import { TaxCalculatorView } from './components/TaxCalculatorView';
 import { NoticeDrafterView } from './components/NoticeDrafterView';
@@ -39,6 +40,16 @@ export default function App() {
   const [authMode, setAuthMode] = useState<'signin' | 'signup'>('signin');
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
+  // Host / Admin Authentication State (Isolated from standard users)
+  const [adminAuthModalOpen, setAdminAuthModalOpen] = useState(false);
+  const [isAdminUnlocked, setIsAdminUnlocked] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem('saqibtax_host_authenticated') === 'true';
+    } catch {
+      return false;
+    }
+  });
+
   // Privacy & Statutory Notice States
   const [isMasked, setIsMasked] = useState<boolean>(() => getPrivacySettings().screenMaskingEnabled);
   const [legalNoticeOpen, setLegalNoticeOpen] = useState<boolean>(false);
@@ -50,6 +61,26 @@ export default function App() {
     const curr = getPrivacySettings();
     savePrivacySettings({ ...curr, screenMaskingEnabled: updated });
   };
+
+  // Check URL hash for direct #admin navigation
+  useEffect(() => {
+    const handleHashCheck = () => {
+      const hash = window.location.hash.toLowerCase();
+      if (hash === '#admin' || hash === '#/admin') {
+        const isAuth = sessionStorage.getItem('saqibtax_host_authenticated') === 'true';
+        if (isAuth) {
+          setIsAdminUnlocked(true);
+          setActiveTab('admin-payments');
+        } else {
+          setAdminAuthModalOpen(true);
+        }
+      }
+    };
+
+    handleHashCheck();
+    window.addEventListener('hashchange', handleHashCheck);
+    return () => window.removeEventListener('hashchange', handleHashCheck);
+  }, []);
 
   // Verify auth session on load
   useEffect(() => {
@@ -119,6 +150,41 @@ export default function App() {
     }
   };
 
+  // Host access handlers
+  const handleOpenHostAccess = () => {
+    if (isAdminUnlocked) {
+      setActiveTab('admin-payments');
+    } else {
+      setAdminAuthModalOpen(true);
+    }
+  };
+
+  const handleHostAuthSuccess = () => {
+    try {
+      sessionStorage.setItem('saqibtax_host_authenticated', 'true');
+    } catch {
+      // ignore
+    }
+    setIsAdminUnlocked(true);
+    setAdminAuthModalOpen(false);
+    setActiveTab('admin-payments');
+  };
+
+  const handleExitAdmin = () => {
+    try {
+      sessionStorage.removeItem('saqibtax_host_authenticated');
+    } catch {
+      // ignore
+    }
+    setIsAdminUnlocked(false);
+    if (window.location.hash === '#admin' || window.location.hash === '#/admin') {
+      window.location.hash = '';
+    }
+    if (activeTab === 'admin-payments') {
+      setActiveTab('chat');
+    }
+  };
+
   const isPortalTab = activeTab.startsWith('portal-');
 
   return (
@@ -138,6 +204,8 @@ export default function App() {
         onOpenLegalNotice={() => setLegalNoticeOpen(true)}
         mobileSidebarOpen={mobileSidebarOpen}
         onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
+        isAdminUnlocked={isAdminUnlocked}
+        onExitAdmin={handleExitAdmin}
       />
 
       {/* Mobile Drawer Navigation Overlay */}
@@ -162,6 +230,8 @@ export default function App() {
                 setMobileSidebarOpen(false);
               }}
               onCloseMobile={() => setMobileSidebarOpen(false)}
+              isAdminUnlocked={isAdminUnlocked}
+              onExitAdmin={handleExitAdmin}
               className="h-full w-full"
             />
           </div>
@@ -179,6 +249,8 @@ export default function App() {
               setActiveTab(tab);
             }}
             onOpenPricing={() => setActiveTab('pricing')}
+            isAdminUnlocked={isAdminUnlocked}
+            onExitAdmin={handleExitAdmin}
             className="h-[calc(100vh-4rem)] sticky top-16"
           />
         </div>
@@ -368,6 +440,7 @@ export default function App() {
                 const token = localStorage.getItem('saqibtax_token');
                 if (token) fetchUserProfile(token);
               }}
+              onExitAdmin={handleExitAdmin}
             />
           )}
 
@@ -382,6 +455,8 @@ export default function App() {
             onOpenPrivacyManager={() => setPrivacyModalOpen(true)}
             isMasked={isMasked}
             onToggleMasking={handleToggleMasking}
+            onOpenHostAccess={handleOpenHostAccess}
+            isAdminUnlocked={isAdminUnlocked}
           />
         </main>
       </div>
@@ -393,6 +468,13 @@ export default function App() {
         mode={authMode}
         setMode={setAuthMode}
         onSuccess={handleAuthSuccess}
+      />
+
+      {/* Host / Admin Authentication Modal (Passkey 78727872 Protected) */}
+      <AdminAuthModal
+        isOpen={adminAuthModalOpen}
+        onClose={() => setAdminAuthModalOpen(false)}
+        onSuccess={handleHostAuthSuccess}
       />
 
       {/* Statutory Legal Disclaimer Modal */}

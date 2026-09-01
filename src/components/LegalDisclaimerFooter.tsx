@@ -14,13 +14,17 @@ interface LegalDisclaimerFooterProps {
   onOpenPrivacyManager: () => void;
   isMasked: boolean;
   onToggleMasking: () => void;
+  onOpenHostAccess?: () => void;
+  isAdminUnlocked?: boolean;
 }
 
 export const LegalDisclaimerFooter: React.FC<LegalDisclaimerFooterProps> = ({
   onOpenLegalNotice,
   onOpenPrivacyManager,
   isMasked,
-  onToggleMasking
+  onToggleMasking,
+  onOpenHostAccess,
+  isAdminUnlocked = false,
 }) => {
   return (
     <footer 
@@ -76,6 +80,24 @@ export const LegalDisclaimerFooter: React.FC<LegalDisclaimerFooterProps> = ({
             <Scale className="w-3 h-3" />
             <span className="underline decoration-emerald-600/60 underline-offset-2">Legal Disclaimers</span>
           </button>
+
+          {onOpenHostAccess && (
+            <>
+              <span className="text-slate-700 hidden sm:inline">|</span>
+              {/* Discreet Host Access Link */}
+              <button
+                id="footer-host-access-trigger"
+                onClick={onOpenHostAccess}
+                className="flex items-center gap-1 text-slate-500 hover:text-amber-400 transition cursor-pointer"
+                title="Authorized Host & Admin Access (Passkey Protected)"
+              >
+                <ShieldCheck className={`w-3 h-3 ${isAdminUnlocked ? 'text-amber-400' : 'text-slate-600'}`} />
+                <span className={`hover:underline text-[10px] ${isAdminUnlocked ? 'text-amber-300 font-semibold' : 'text-slate-500'}`}>
+                  {isAdminUnlocked ? 'Host Portal' : 'Host Access'}
+                </span>
+              </button>
+            </>
+          )}
         </div>
       </div>
     </footer>

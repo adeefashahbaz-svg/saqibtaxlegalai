@@ -41,7 +41,6 @@ export const SubscriptionView: React.FC<SubscriptionViewProps> = ({
   const [billingCycle, setBillingCycle] = useState<'Monthly' | 'Yearly'>('Yearly');
   const [statusData, setStatusData] = useState<SubscriptionStatusData | null>(null);
   const [loadingStatus, setLoadingStatus] = useState(false);
-  const [approvingAdmin, setApprovingAdmin] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   
   const token = localStorage.getItem('saqibtax_token');
@@ -85,34 +84,6 @@ export const SubscriptionView: React.FC<SubscriptionViewProps> = ({
     }
     setSelectedPlanForModal(tier);
     setModalOpen(true);
-  };
-
-  const handleSimulateAdminApproval = async (paymentId: string, planTier: SubscriptionTier) => {
-    setApprovingAdmin(true);
-    try {
-      const res = await fetch('/api/admin/verify-payment', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          payment_id: paymentId,
-          action: 'Approve',
-        }),
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.detail || 'Approval failed');
-
-      onUpdateTier(planTier);
-      setSuccessMessage(`Subscription approved! Your account is now ${planTier.toUpperCase()}.`);
-      fetchSubscriptionStatus();
-      setTimeout(() => setSuccessMessage(''), 4000);
-    } catch (err: any) {
-      alert(err.message);
-    } finally {
-      setApprovingAdmin(false);
-    }
   };
 
   const pendingPayment = statusData?.pending_payment || (statusData?.pending_subscription as any);
@@ -199,19 +170,9 @@ export const SubscriptionView: React.FC<SubscriptionViewProps> = ({
                 id="refresh-sub-status-btn"
                 onClick={fetchSubscriptionStatus}
                 disabled={loadingStatus}
-                className="px-3 py-2 bg-white hover:bg-slate-50 border border-amber-300 rounded-xl text-xs font-bold text-amber-900 flex items-center gap-1.5 transition"
+                className="px-4 py-2 bg-white hover:bg-slate-50 border border-amber-300 rounded-xl text-xs font-bold text-amber-900 flex items-center gap-1.5 transition shadow-xs"
               >
                 <RefreshCw className={`w-3.5 h-3.5 ${loadingStatus ? 'animate-spin' : ''}`} /> Refresh Status
-              </button>
-
-              <button
-                id="admin-quick-approve-banner-btn"
-                onClick={() => handleSimulateAdminApproval(pendingPayment.id, (pendingPayment.plan_tier || 'pro') as SubscriptionTier)}
-                disabled={approvingAdmin}
-                className="px-4 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-xl text-xs font-black shadow transition flex items-center gap-1.5"
-              >
-                <ShieldCheck className="w-3.5 h-3.5" /> 
-                {approvingAdmin ? 'Approving...' : 'Admin Fast-Approve (Demo)'}
               </button>
             </div>
           </div>

@@ -32,6 +32,8 @@ interface NavbarProps {
   onOpenLegalNotice?: () => void;
   mobileSidebarOpen?: boolean;
   onToggleMobileSidebar?: () => void;
+  isAdminUnlocked?: boolean;
+  onExitAdmin?: () => void;
 }
 
 const SEARCH_QUICK_ACTIONS = [
@@ -46,7 +48,6 @@ const SEARCH_QUICK_ACTIONS = [
   { label: 'FBR Show-Cause Notice Drafter', tab: 'notice', category: 'Legal Suite' },
   { label: 'Document Audit & Discrepancy Matrix', tab: 'analyzer', category: 'Audit' },
   { label: 'Active Taxpayers List (ATL) Lookup', tab: 'directory', category: 'Directories' },
-  { label: 'Admin Payment Verification Ledger', tab: 'admin-payments', category: 'Admin' },
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -61,7 +62,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenPrivacyManager,
   onOpenLegalNotice,
   mobileSidebarOpen = false,
-  onToggleMobileSidebar
+  onToggleMobileSidebar,
+  isAdminUnlocked = false,
+  onExitAdmin,
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -245,21 +248,32 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             )}
 
-            {/* Admin Badge Shortcut */}
-            {user?.role === 'admin' && (
-              <button
-                id="btn-nav-admin-badge"
-                onClick={() => setActiveTab('admin-payments')}
-                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs ${
-                  activeTab === 'admin-payments'
-                    ? 'bg-amber-600 text-white shadow-md'
-                    : 'bg-amber-950/80 text-amber-300 border border-amber-500/50 hover:bg-amber-900/60'
-                }`}
-                title="Admin Bank Verification Ledger"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
-                <span className="hidden sm:inline">Admin Desk</span>
-              </button>
+            {/* Host / Admin Desk Shortcut (Only visible when Host Mode is unlocked) */}
+            {isAdminUnlocked && (
+              <div className="flex items-center gap-1.5">
+                <button
+                  id="btn-nav-admin-badge"
+                  onClick={() => setActiveTab('admin-payments')}
+                  className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition shadow-xs ${
+                    activeTab === 'admin-payments'
+                      ? 'bg-amber-600 text-white shadow-md'
+                      : 'bg-amber-950/80 text-amber-300 border border-amber-500/50 hover:bg-amber-900/60'
+                  }`}
+                  title="Host Administration Desk"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                  <span className="hidden sm:inline">Host Desk</span>
+                </button>
+                {onExitAdmin && (
+                  <button
+                    onClick={onExitAdmin}
+                    className="p-1.5 text-[10px] text-slate-400 hover:text-rose-300 hover:bg-slate-800 rounded-lg transition"
+                    title="Lock Host Session"
+                  >
+                    Lock
+                  </button>
+                )}
+              </div>
             )}
 
             {user ? (

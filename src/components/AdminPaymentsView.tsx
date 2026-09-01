@@ -24,7 +24,8 @@ import {
   X,
   Settings,
   Sliders,
-  DollarSign
+  DollarSign,
+  LogOut
 } from 'lucide-react';
 import { PaymentReceiptItem, UserProfile } from '../types';
 import { AdminSettingsSection } from './AdminSettingsSection';
@@ -33,12 +34,14 @@ interface AdminPaymentsViewProps {
   user: UserProfile | null;
   onOpenAuth: (mode: 'signin' | 'signup') => void;
   onRefreshUserProfile?: () => void;
+  onExitAdmin?: () => void;
 }
 
 export const AdminPaymentsView: React.FC<AdminPaymentsViewProps> = ({
   user,
   onOpenAuth,
   onRefreshUserProfile,
+  onExitAdmin,
 }) => {
   const [activeAdminTab, setActiveAdminTab] = useState<'ledger' | 'settings'>('ledger');
   const [payments, setPayments] = useState<PaymentReceiptItem[]>([]);
@@ -286,9 +289,24 @@ export const AdminPaymentsView: React.FC<AdminPaymentsViewProps> = ({
           </button>
         </div>
 
-        <div className="hidden sm:flex items-center gap-2 text-xs text-slate-400">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>Admin Portal Active</span>
+        <div className="flex items-center gap-3 text-xs">
+          <div className="hidden sm:flex items-center gap-2 text-slate-400 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-800">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+            <span className="text-slate-300 font-medium">Host Desk Unlocked</span>
+          </div>
+
+          {onExitAdmin && (
+            <button
+              type="button"
+              id="admin-exit-mode-btn"
+              onClick={onExitAdmin}
+              className="px-3.5 py-1.5 bg-rose-950/80 hover:bg-rose-900 border border-rose-600/50 text-rose-200 text-xs font-bold rounded-xl transition flex items-center gap-1.5 shadow-sm"
+              title="Lock Host Session and return to standard client workspace"
+            >
+              <LogOut className="w-3.5 h-3.5 text-rose-400" />
+              <span>Exit Host Mode</span>
+            </button>
+          )}
         </div>
       </div>
 

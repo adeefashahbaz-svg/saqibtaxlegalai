@@ -394,20 +394,6 @@ export const PORTAL_CATEGORIES: NavCategory[] = [
     ],
   },
   {
-    category: "Admin & Verification",
-    items: [
-      {
-        id: "admin-payments",
-        label: "Admin Bank Verification",
-        tabKey: "admin-payments",
-        icon: ShieldCheck,
-        badge: "Ledger Desk",
-        badgeColor: "bg-amber-950/90 text-amber-300 border border-amber-600",
-        description: "Verify TRX IDs & approve Pro / Enterprise tiers",
-      },
-    ],
-  },
-  {
     category: "Live AI & Support Channels",
     items: [
       {
@@ -450,6 +436,8 @@ interface SidebarProps {
   onSelectTab: (tabKey: string) => void;
   onOpenPricing?: () => void;
   onCloseMobile?: () => void;
+  isAdminUnlocked?: boolean;
+  onExitAdmin?: () => void;
   className?: string;
 }
 
@@ -458,6 +446,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
   onSelectTab,
   onOpenPricing,
   onCloseMobile,
+  isAdminUnlocked = false,
+  onExitAdmin,
   className = "",
 }) => {
   const [filterQuery, setFilterQuery] = useState("");
@@ -484,7 +474,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
     activeTab === "statutes-financial-integrity" ||
     activeTab === "statutes-foreign-exchange";
 
-  const filteredCategories = PORTAL_CATEGORIES.map((cat) => {
+  // Build categories list, excluding any admin category for normal users
+  const baseCategories = isAdminUnlocked 
+    ? [
+        {
+          category: "Host Workspace (Unlocked)",
+          items: [
+            {
+              id: "admin-payments",
+              label: "Host Administration Desk",
+              tabKey: "admin-payments",
+              icon: ShieldCheck,
+              badge: "Admin Access",
+              badgeColor: "bg-amber-500 text-slate-950 font-black",
+              description: "Live bank accounts, pricing tiers & receipt audits",
+            },
+          ],
+        },
+        ...PORTAL_CATEGORIES,
+      ]
+    : PORTAL_CATEGORIES;
+
+  const filteredCategories = baseCategories.map((cat) => {
     const matchedItems = cat.items.filter((item) => {
       const mainMatch =
         item.label.toLowerCase().includes(filterQuery.toLowerCase()) ||
