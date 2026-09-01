@@ -30,7 +30,13 @@ import {
   ShieldAlert,
   FolderOpen,
   Folder,
-  Tag
+  Tag,
+  FileSearch,
+  FileText,
+  Sliders,
+  Code2,
+  Sparkles,
+  CreditCard
 } from "lucide-react";
 
 export interface NavSubItem {
@@ -63,6 +69,83 @@ export interface NavCategory {
 }
 
 export const PORTAL_CATEGORIES: NavCategory[] = [
+  {
+    category: "Core Tax & Legal Tools",
+    items: [
+      {
+        id: "core-chat",
+        label: "Legal AI Advisory & Research",
+        tabKey: "chat",
+        icon: MessageSquare,
+        badge: "AI Powered",
+        badgeColor: "bg-emerald-950/90 text-emerald-300 border border-emerald-500",
+        description: "Statutory citations & FBR jurisprudence query engine",
+      },
+      {
+        id: "core-enterprise-b2b",
+        label: "Compliance Vault & Client Ledger",
+        tabKey: "enterprise-b2b",
+        icon: Users,
+        badge: "Enterprise",
+        badgeColor: "bg-blue-950/90 text-blue-300 border border-blue-500",
+        description: "Multi-client manager, Section 116 Wealth Recon & firm dossier",
+      },
+      {
+        id: "core-calculator",
+        label: "Advanced Tax Calculator",
+        tabKey: "calculator",
+        icon: Calculator,
+        badge: "Finance Act 2026",
+        badgeColor: "bg-emerald-950/90 text-emerald-300 border border-emerald-500",
+        description: "Salary slabs, business tax, super tax & corporate withholding",
+      },
+      {
+        id: "core-notice",
+        label: "FBR Notice Drafter & Appeals",
+        tabKey: "notice",
+        icon: FileText,
+        badge: "Drafting Suite",
+        badgeColor: "bg-purple-950/90 text-purple-300 border border-purple-500",
+        description: "Sec 122, 111, 177 & 161 automated notice replies & legal appeals",
+      },
+      {
+        id: "core-analyzer",
+        label: "Document Audit & Compliance Analyzer",
+        tabKey: "analyzer",
+        icon: FileSearch,
+        badge: "Audit AI",
+        badgeColor: "bg-amber-950/90 text-amber-300 border border-amber-500",
+        description: "Scan FBR orders, show-cause notices & tax discrepancy matrices",
+      },
+      {
+        id: "core-sales-tax-engine",
+        label: "Sales Tax Act 1990 Interactive Engine",
+        tabKey: "sales-tax-engine",
+        icon: Receipt,
+        badge: "STA 1990",
+        badgeColor: "bg-emerald-950/90 text-emerald-300 border border-emerald-500",
+        description: "Section 8B 90% input cap, Sched 3, 5, 6 & further tax engine",
+      },
+      {
+        id: "core-directory",
+        label: "Sales Tax & ATL Active Directory",
+        tabKey: "directory",
+        icon: FileSpreadsheet,
+        badge: "ATL Lookup",
+        badgeColor: "bg-cyan-950/90 text-cyan-300 border border-cyan-500",
+        description: "HS Codes, SRO exemptions, provincial tariffs & ATL status rules",
+      },
+      {
+        id: "core-pricing",
+        label: "Subscription & Pricing Plans",
+        tabKey: "pricing",
+        icon: Crown,
+        badge: "Pro & Enterprise",
+        badgeColor: "bg-amber-950/90 text-amber-300 border border-amber-500",
+        description: "Bank transfer verification, daily query allowances & team seats",
+      },
+    ],
+  },
   {
     category: "Legal Repository & Jurisprudence",
     items: [

@@ -25,7 +25,7 @@ export const LegalDisclaimerFooter: React.FC<LegalDisclaimerFooterProps> = ({
   return (
     <footer 
       id="global-legal-footer"
-      className="border-t border-slate-800 bg-slate-950/90 text-slate-400 py-2.5 px-4 sm:px-6 text-[11px] backdrop-blur-md transition-all sticky bottom-0 z-30"
+      className="border-t border-slate-800 bg-slate-950/95 text-slate-400 py-3 px-4 sm:px-6 text-[11px] backdrop-blur-md transition-all mt-auto shrink-0"
     >
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-2.5">
         {/* Left: Mandatory Global Statutory Disclaimer */}

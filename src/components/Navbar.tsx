@@ -23,7 +23,10 @@ import {
   Eye,
   EyeOff,
   Menu,
-  X
+  X,
+  FileSearch,
+  Receipt,
+  FileSpreadsheet
 } from 'lucide-react';
 
 import { UserProfile } from '../types';
@@ -99,8 +102,8 @@ export const Navbar: React.FC<NavbarProps> = ({
             <button
               id="btn-mobile-hamburger"
               onClick={onToggleMobileSidebar}
-              className="lg:hidden p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl bg-slate-800/90 text-slate-300 hover:text-white hover:bg-slate-700 active:bg-slate-600 border border-slate-700/80 transition cursor-pointer"
-              title={mobileSidebarOpen ? "Close navigation menu" : "Open full navigation menu"}
+              className="lg:hidden p-2 min-h-[44px] min-w-[44px] flex items-center gap-1.5 justify-center rounded-xl bg-slate-800 text-slate-200 hover:text-white hover:bg-slate-700 active:bg-slate-600 border border-slate-700 shadow-sm transition cursor-pointer"
+              title={mobileSidebarOpen ? "Close navigation menu" : "Open full navigation menu (☰)"}
               aria-label="Toggle navigation menu"
               aria-expanded={mobileSidebarOpen}
             >
@@ -109,6 +112,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               ) : (
                 <Menu className="w-5 h-5 text-emerald-400" />
               )}
+              <span className="text-[11px] font-bold tracking-tight text-slate-300 hidden xs:inline">Menu</span>
             </button>
 
             {/* Logo & Brand */}
@@ -401,73 +405,150 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
 
-        {/* Mobile Navigation Row */}
-        <div className="lg:hidden flex items-center overflow-x-auto py-2 space-x-1.5 scrollbar-none border-t border-slate-800 -mx-3 px-3 sm:-mx-6 sm:px-6">
+        {/* Mobile Navigation Quick Tabs Bar with Smooth Horizontal Swiping */}
+        <div className="lg:hidden flex items-center overflow-x-auto py-2.5 space-x-2 scrollbar-none border-t border-slate-800/90 -mx-3 px-3 sm:-mx-6 sm:px-6 overscroll-x-contain touch-pan-x">
           <button
             onClick={() => setActiveTab('enterprise-b2b')}
-            className={`whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-lg shrink-0 transition ${activeTab === 'enterprise-b2b' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-emerald-300 hover:bg-slate-800'}`}
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-xl shrink-0 transition-all ${
+              activeTab === 'enterprise-b2b' 
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/50 ring-1 ring-emerald-400/40' 
+                : 'bg-slate-800 text-emerald-300 hover:bg-slate-750 border border-slate-700/60'
+            }`}
           >
-            Client Ledger
-          </button>
-          <button
-            onClick={() => setActiveTab('statutes-dashboard')}
-            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'statutes-dashboard' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
-          >
-            Statutes
+            <Users className="w-3.5 h-3.5" />
+            <span>Client Ledger</span>
           </button>
           <button
             onClick={() => setActiveTab('chat')}
-            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'chat' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl shrink-0 transition-all ${
+              activeTab === 'chat' 
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/50 ring-1 ring-emerald-400/40' 
+                : 'bg-slate-800 text-slate-200 hover:bg-slate-750 border border-slate-700/60'
+            }`}
           >
-            Legal Chat
+            <MessageSquare className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Legal Chat</span>
           </button>
           <button
-            onClick={() => setActiveTab('super-tax')}
-            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'super-tax' ? 'bg-amber-600 text-slate-950 font-bold shadow-sm' : 'bg-slate-800/80 text-amber-300 hover:bg-slate-800'}`}
+            onClick={() => setActiveTab('master-statutes-index')}
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl shrink-0 transition-all ${
+              activeTab === 'master-statutes-index' || activeTab.startsWith('statutes-') 
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/50 ring-1 ring-emerald-400/40' 
+                : 'bg-slate-800 text-slate-200 hover:bg-slate-750 border border-slate-700/60'
+            }`}
           >
-            Super Tax
-          </button>
-          <button
-            onClick={() => setActiveTab('sales-tax-engine')}
-            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'sales-tax-engine' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
-          >
-            Sales Tax 1990
+            <Scale className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Statutes Master</span>
           </button>
           <button
             onClick={() => setActiveTab('calculator')}
-            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'calculator' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl shrink-0 transition-all ${
+              activeTab === 'calculator' 
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/50 ring-1 ring-emerald-400/40' 
+                : 'bg-slate-800 text-slate-200 hover:bg-slate-750 border border-slate-700/60'
+            }`}
           >
-            Tax Calc
+            <Calculator className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Tax Calc</span>
           </button>
           <button
             onClick={() => setActiveTab('notice')}
-            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'notice' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl shrink-0 transition-all ${
+              activeTab === 'notice' 
+                ? 'bg-purple-600 text-white shadow-md shadow-purple-950/50 ring-1 ring-purple-400/40' 
+                : 'bg-slate-800 text-purple-300 hover:bg-slate-750 border border-slate-700/60'
+            }`}
           >
-            Notice Reply
-          </button>
-          <button
-            onClick={() => setActiveTab('directory')}
-            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'directory' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
-          >
-            Sales Tax & ATL
+            <FileText className="w-3.5 h-3.5" />
+            <span>Notice Reply</span>
           </button>
           <button
             onClick={() => setActiveTab('analyzer')}
-            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'analyzer' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl shrink-0 transition-all ${
+              activeTab === 'analyzer' 
+                ? 'bg-amber-600 text-slate-950 font-bold shadow-md ring-1 ring-amber-400/40' 
+                : 'bg-slate-800 text-amber-300 hover:bg-slate-750 border border-slate-700/60'
+            }`}
           >
-            Audit
+            <FileSearch className="w-3.5 h-3.5" />
+            <span>Audit AI</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('super-tax')}
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl shrink-0 transition-all ${
+              activeTab === 'super-tax' 
+                ? 'bg-amber-600 text-slate-950 font-bold shadow-md ring-1 ring-amber-400/40' 
+                : 'bg-slate-800 text-amber-300 hover:bg-slate-750 border border-slate-700/60'
+            }`}
+          >
+            <Zap className="w-3.5 h-3.5" />
+            <span>Super Tax</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('sales-tax-engine')}
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl shrink-0 transition-all ${
+              activeTab === 'sales-tax-engine' 
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/50 ring-1 ring-emerald-400/40' 
+                : 'bg-slate-800 text-slate-200 hover:bg-slate-750 border border-slate-700/60'
+            }`}
+          >
+            <Receipt className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Sales Tax 1990</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('property-tax')}
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl shrink-0 transition-all ${
+              activeTab === 'property-tax' 
+                ? 'bg-emerald-600 text-white shadow-md shadow-emerald-950/50 ring-1 ring-emerald-400/40' 
+                : 'bg-slate-800 text-slate-200 hover:bg-slate-750 border border-slate-700/60'
+            }`}
+          >
+            <Building className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Sec 7E Property</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('provincial-tax')}
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl shrink-0 transition-all ${
+              activeTab === 'provincial-tax' 
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-950/50 ring-1 ring-indigo-400/40' 
+                : 'bg-slate-800 text-indigo-300 hover:bg-slate-750 border border-slate-700/60'
+            }`}
+          >
+            <Globe className="w-3.5 h-3.5" />
+            <span>Provincial PST</span>
+          </button>
+          <button
+            onClick={() => setActiveTab('directory')}
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl shrink-0 transition-all ${
+              activeTab === 'directory' 
+                ? 'bg-cyan-600 text-white shadow-md shadow-cyan-950/50 ring-1 ring-cyan-400/40' 
+                : 'bg-slate-800 text-cyan-300 hover:bg-slate-750 border border-slate-700/60'
+            }`}
+          >
+            <FileSpreadsheet className="w-3.5 h-3.5" />
+            <span>ATL Directory</span>
           </button>
           <button
             onClick={() => setActiveTab('pricing')}
-            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'pricing' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl shrink-0 transition-all ${
+              activeTab === 'pricing' 
+                ? 'bg-amber-600 text-slate-950 font-bold shadow-md ring-1 ring-amber-400/40' 
+                : 'bg-slate-800 text-amber-300 hover:bg-slate-750 border border-slate-700/60'
+            }`}
           >
-            Tiers
+            <Crown className="w-3.5 h-3.5" />
+            <span>Pricing & Plans</span>
           </button>
           <button
             onClick={() => setActiveTab('architecture')}
-            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'architecture' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
+            className={`whitespace-nowrap flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl shrink-0 transition-all ${
+              activeTab === 'architecture' 
+                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-950/50 ring-1 ring-indigo-400/40' 
+                : 'bg-slate-800 text-slate-300 hover:bg-slate-750 border border-slate-700/60'
+            }`}
           >
-            Code
+            <Code2 className="w-3.5 h-3.5" />
+            <span>Architecture</span>
           </button>
         </div>
       </div>

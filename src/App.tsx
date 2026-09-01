@@ -145,12 +145,12 @@ export default function App() {
         <div className="fixed inset-0 z-50 lg:hidden flex" id="mobile-sidebar-drawer">
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-slate-950/85 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-slate-950/80 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
             onClick={() => setMobileSidebarOpen(false)}
             aria-hidden="true"
           />
           {/* Drawer Content */}
-          <div className="relative flex-1 flex flex-col max-w-xs sm:max-w-sm w-full bg-slate-950 h-full z-10 shadow-2xl border-r border-slate-800">
+          <div className="relative flex-1 flex flex-col max-w-xs sm:max-w-sm w-full bg-slate-950 h-full z-10 shadow-2xl border-r border-slate-800 animate-in slide-in-from-left duration-250 ease-out">
             <Sidebar
               activeTab={activeTab}
               onSelectTab={(tab) => {
@@ -184,8 +184,8 @@ export default function App() {
         </div>
 
         {/* Dynamic Viewport */}
-        <main className="flex-1 overflow-y-auto bg-slate-900 flex flex-col justify-between">
-          <div>
+        <main className="flex-1 overflow-y-auto bg-slate-900 flex flex-col justify-between min-h-0">
+          <div className="flex-1 flex flex-col min-h-0">
             {activeTab === 'tax-legislation' && (
               <TaxLegislationView
                 onNavigateToChat={(initialPrompt) => {
