@@ -599,7 +599,7 @@ export const MasterStatutesIndexView: React.FC<MasterStatutesIndexViewProps> = (
             <div className="flex-1 flex flex-col md:flex-row overflow-hidden">
               
               {/* Left Column: Sections List */}
-              <div className="w-full md:w-80 border-b md:border-b-0 md:border-r border-slate-800 bg-slate-950/60 p-3 sm:p-4 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-slate-800">
+              <div className="w-full md:w-80 max-h-56 md:max-h-none border-b md:border-b-0 md:border-r border-slate-800 bg-slate-950/60 p-3 sm:p-4 overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-slate-800 shrink-0">
                 <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400 px-2">
                   Codified Sections & Rules ({previewDrawerLaw.sections.length})
                 </p>

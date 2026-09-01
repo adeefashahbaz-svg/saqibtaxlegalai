@@ -136,7 +136,37 @@ export default function App() {
         onToggleMasking={handleToggleMasking}
         onOpenPrivacyManager={() => setPrivacyModalOpen(true)}
         onOpenLegalNotice={() => setLegalNoticeOpen(true)}
+        mobileSidebarOpen={mobileSidebarOpen}
+        onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
       />
+
+      {/* Mobile Drawer Navigation Overlay */}
+      {mobileSidebarOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex" id="mobile-sidebar-drawer">
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-slate-950/85 backdrop-blur-xs transition-opacity"
+            onClick={() => setMobileSidebarOpen(false)}
+            aria-hidden="true"
+          />
+          {/* Drawer Content */}
+          <div className="relative flex-1 flex flex-col max-w-xs sm:max-w-sm w-full bg-slate-950 h-full z-10 shadow-2xl border-r border-slate-800">
+            <Sidebar
+              activeTab={activeTab}
+              onSelectTab={(tab) => {
+                setActiveTab(tab);
+                setMobileSidebarOpen(false);
+              }}
+              onOpenPricing={() => {
+                setActiveTab('pricing');
+                setMobileSidebarOpen(false);
+              }}
+              onCloseMobile={() => setMobileSidebarOpen(false)}
+              className="h-full w-full"
+            />
+          </div>
+        </div>
+      )}
 
       {/* Main Layout with Persistent Sidebar */}
       <div className="flex-1 flex overflow-hidden">

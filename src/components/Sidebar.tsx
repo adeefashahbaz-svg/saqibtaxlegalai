@@ -366,6 +366,7 @@ interface SidebarProps {
   activeTab: string;
   onSelectTab: (tabKey: string) => void;
   onOpenPricing?: () => void;
+  onCloseMobile?: () => void;
   className?: string;
 }
 
@@ -373,11 +374,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
   activeTab,
   onSelectTab,
   onOpenPricing,
+  onCloseMobile,
   className = "",
 }) => {
   const [filterQuery, setFilterQuery] = useState("");
   // Accordion state for Master Statutes Index (open by default if active or user toggles)
   const [masterIndexExpanded, setMasterIndexExpanded] = useState<boolean>(true);
+
+  const handleSelect = (tabKey: string) => {
+    onSelectTab(tabKey);
+    if (onCloseMobile) {
+      onCloseMobile();
+    }
+  };
+
+  const handlePricing = () => {
+    if (onOpenPricing) onOpenPricing();
+    if (onCloseMobile) onCloseMobile();
+  };
 
   const isMasterStatutesTabActive =
     activeTab === "master-statutes-index" ||
@@ -387,7 +401,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     activeTab === "statutes-financial-integrity" ||
     activeTab === "statutes-foreign-exchange";
 
-  const filteredCategories進 = PORTAL_CATEGORIES.map((cat) => {
+  const filteredCategories = PORTAL_CATEGORIES.map((cat) => {
     const matchedItems = cat.items.filter((item) => {
       const mainMatch =
         item.label.toLowerCase().includes(filterQuery.toLowerCase()) ||
@@ -410,27 +424,42 @@ export const Sidebar: React.FC<SidebarProps> = ({
   return (
     <aside
       id="saqibtax-app-sidebar"
-      className={`w-72 bg-slate-950 text-slate-200 border-r border-slate-800/80 flex flex-col shrink-0 select-none ${className}`}
+      className={`w-72 sm:w-80 bg-slate-950 text-slate-200 border-r border-slate-800/80 flex flex-col shrink-0 select-none ${className}`}
     >
       {/* Brand Header */}
       <div className="p-4 border-b border-slate-800/80 bg-slate-900/60">
-        <button
-          onClick={() => onSelectTab("chat")}
-          className="flex items-center gap-3 group text-left w-full"
-        >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white shadow-md shadow-emerald-950/50 border border-emerald-400/30 group-hover:scale-105 transition">
-            <Scale className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-extrabold text-sm tracking-tight text-white">SaqibTax</span>
-              <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-700">
-                PORTAL
-              </span>
+        <div className="flex items-center justify-between gap-2">
+          <button
+            onClick={() => handleSelect("chat")}
+            className="flex items-center gap-3 group text-left flex-1 min-w-0"
+          >
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center text-white shadow-md shadow-emerald-950/50 border border-emerald-400/30 group-hover:scale-105 transition shrink-0">
+              <Scale className="w-5 h-5" />
             </div>
-            <p className="text-[10px] text-slate-400">Pakistan Legal & FBR Suite</p>
-          </div>
-        </button>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <span className="font-extrabold text-sm tracking-tight text-white">SaqibTax</span>
+                <span className="text-[10px] font-black px-1.5 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-700">
+                  PORTAL
+                </span>
+              </div>
+              <p className="text-[10px] text-slate-400 truncate">Pakistan Legal & FBR Suite</p>
+            </div>
+          </button>
+
+          {/* Mobile Drawer Close Button */}
+          {onCloseMobile && (
+            <button
+              id="btn-close-mobile-sidebar"
+              onClick={onCloseMobile}
+              className="p-2 rounded-xl bg-slate-800 text-slate-400 hover:text-white hover:bg-slate-700 transition shrink-0"
+              title="Close navigation menu"
+              aria-label="Close navigation"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          )}
+        </div>
 
         {/* Search filter in Sidebar */}
         <div className="mt-3 relative">
@@ -440,14 +469,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             value={filterQuery}
             onChange={(e) => setFilterQuery(e.target.value)}
             placeholder="Search portal & statutes..."
-            className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-[11px] text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50 transition"
+            className="w-full pl-8 pr-8 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500/50 transition"
           />
           {filterQuery && (
             <button
               onClick={() => setFilterQuery("")}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
             >
-              <X className="w-3 h-3" />
+              <X className="w-3.5 h-3.5" />
             </button>
           )}
         </div>
@@ -455,7 +484,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Navigation Sections */}
       <div className="flex-1 overflow-y-auto px-3 py-4 space-y-5 scrollbar-thin scrollbar-thumb-slate-800">
-        {filteredCategories進.map((cat, idx) => (
+        {filteredCategories.map((cat, idx) => (
           <div key={idx} className="space-y-1.5">
             <div className="px-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 flex items-center justify-between">
               <span>{cat.category}</span>
@@ -508,8 +537,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         }`}
                       >
                         <button
-                          onClick={() => onSelectTab(item.tabKey)}
-                          className="flex items-center gap-2 flex-1 min-w-0 text-left"
+                          onClick={() => handleSelect(item.tabKey)}
+                          className="flex items-center gap-2 flex-1 min-w-0 text-left cursor-pointer"
                         >
                           <div
                             className={`w-6 h-6 rounded-md flex items-center justify-center shrink-0 transition ${
@@ -532,7 +561,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             e.stopPropagation();
                             setMasterIndexExpanded(!masterIndexExpanded);
                           }}
-                          className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition"
+                          className="p-1 rounded text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer"
                           title="Toggle Categories"
                         >
                           {masterIndexExpanded ? (
@@ -551,8 +580,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             return (
                               <button
                                 key={sub.id}
-                                onClick={() => onSelectTab(sub.tabKey)}
-                                className={`w-full group text-left px-2 py-1.5 rounded-lg text-[11px] transition-all flex flex-col space-y-0.5 ${
+                                onClick={() => handleSelect(sub.tabKey)}
+                                className={`w-full group text-left px-2 py-2 rounded-lg text-[11px] transition-all flex flex-col space-y-0.5 cursor-pointer ${
                                   isSubActive
                                     ? "bg-emerald-950/90 text-emerald-200 border border-emerald-600/60 font-semibold"
                                     : "text-slate-400 hover:text-slate-200 hover:bg-slate-900/90"
@@ -585,8 +614,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 return (
                   <button
                     key={item.id}
-                    onClick={() => onSelectTab(item.tabKey)}
-                    className={`w-full group flex items-start gap-2.5 px-2.5 py-2 rounded-xl text-xs text-left transition-all ${
+                    onClick={() => handleSelect(item.tabKey)}
+                    className={`w-full group flex items-start gap-2.5 px-2.5 py-2.5 rounded-xl text-xs text-left transition-all cursor-pointer ${
                       isActive
                         ? "bg-gradient-to-r from-emerald-950/90 to-slate-900 border border-emerald-600/50 text-white shadow-sm"
                         : "text-slate-300 hover:text-white hover:bg-slate-900/80 border border-transparent"
@@ -634,8 +663,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {/* Upgrade Banner */}
       <div className="p-3 border-t border-slate-800/80 bg-slate-900/80 space-y-2">
         <button
-          onClick={onOpenPricing}
-          className="w-full flex items-center justify-between p-2.5 rounded-xl bg-gradient-to-r from-amber-950/60 to-emerald-950/60 border border-amber-600/40 hover:border-amber-500/70 transition group text-left"
+          onClick={handlePricing}
+          className="w-full flex items-center justify-between p-2.5 rounded-xl bg-gradient-to-r from-amber-950/60 to-emerald-950/60 border border-amber-600/40 hover:border-amber-500/70 transition group text-left cursor-pointer"
         >
           <div className="flex items-center gap-2">
             <div className="w-6 h-6 rounded-lg bg-amber-500 text-slate-950 flex items-center justify-center font-bold">

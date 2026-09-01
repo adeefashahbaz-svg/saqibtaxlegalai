@@ -21,7 +21,9 @@ import {
   Users,
   Lock,
   Eye,
-  EyeOff
+  EyeOff,
+  Menu,
+  X
 } from 'lucide-react';
 
 import { UserProfile } from '../types';
@@ -37,6 +39,8 @@ interface NavbarProps {
   onToggleMasking?: () => void;
   onOpenPrivacyManager?: () => void;
   onOpenLegalNotice?: () => void;
+  mobileSidebarOpen?: boolean;
+  onToggleMobileSidebar?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -49,7 +53,9 @@ export const Navbar: React.FC<NavbarProps> = ({
   isMasked = false,
   onToggleMasking,
   onOpenPrivacyManager,
-  onOpenLegalNotice
+  onOpenLegalNotice,
+  mobileSidebarOpen = false,
+  onToggleMobileSidebar
 }) => {
   const getTierBadge = () => {
     if (!user) return null;
@@ -84,21 +90,40 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   return (
     <header className="sticky top-0 z-40 bg-slate-900 text-white border-b border-slate-800 shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16 gap-2 sm:gap-4">
           
-          {/* Logo & Brand */}
-          <div className="flex items-center gap-3 cursor-pointer" onClick={() => setActiveTab('chat')}>
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-950/40 border border-emerald-400/30">
-              <Scale className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-lg tracking-tight text-white flex items-center gap-1.5">
-                  SaqibTax <span className="text-emerald-400 font-extrabold text-sm px-1.5 py-0.5 rounded bg-emerald-950/80 border border-emerald-800/60">LEGAL AI</span>
-                </span>
+          {/* Left: Mobile Hamburger & Logo/Brand */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Hamburger Button for Mobile Drawer */}
+            <button
+              id="btn-mobile-hamburger"
+              onClick={onToggleMobileSidebar}
+              className="lg:hidden p-2 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-xl bg-slate-800/90 text-slate-300 hover:text-white hover:bg-slate-700 active:bg-slate-600 border border-slate-700/80 transition cursor-pointer"
+              title={mobileSidebarOpen ? "Close navigation menu" : "Open full navigation menu"}
+              aria-label="Toggle navigation menu"
+              aria-expanded={mobileSidebarOpen}
+            >
+              {mobileSidebarOpen ? (
+                <X className="w-5 h-5 text-emerald-400" />
+              ) : (
+                <Menu className="w-5 h-5 text-emerald-400" />
+              )}
+            </button>
+
+            {/* Logo & Brand */}
+            <div className="flex items-center gap-2.5 cursor-pointer" onClick={() => setActiveTab('chat')}>
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-950/40 border border-emerald-400/30 shrink-0">
+                <Scale className="w-5 h-5 text-white" />
               </div>
-              <p className="text-[11px] text-slate-400 hidden sm:block">Pakistan Tax Advisory & FBR Legal Intelligence</p>
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="font-bold text-base sm:text-lg tracking-tight text-white flex items-center gap-1">
+                    SaqibTax <span className="text-emerald-400 font-extrabold text-[10px] sm:text-xs px-1.5 py-0.5 rounded bg-emerald-950/80 border border-emerald-800/60">LEGAL AI</span>
+                  </span>
+                </div>
+                <p className="text-[10px] sm:text-[11px] text-slate-400 hidden sm:block truncate">Pakistan Tax Advisory & FBR Legal Intelligence</p>
+              </div>
             </div>
           </div>
 
@@ -377,59 +402,70 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
 
         {/* Mobile Navigation Row */}
-        <div className="lg:hidden flex items-center justify-between overflow-x-auto py-2 space-x-2 scrollbar-none border-t border-slate-800">
+        <div className="lg:hidden flex items-center overflow-x-auto py-2 space-x-1.5 scrollbar-none border-t border-slate-800 -mx-3 px-3 sm:-mx-6 sm:px-6">
           <button
             onClick={() => setActiveTab('enterprise-b2b')}
-            className={`whitespace-nowrap px-2.5 py-1 text-xs font-semibold rounded-md ${activeTab === 'enterprise-b2b' ? 'bg-emerald-600 text-white' : 'text-emerald-300'}`}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-semibold rounded-lg shrink-0 transition ${activeTab === 'enterprise-b2b' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-emerald-300 hover:bg-slate-800'}`}
           >
             Client Ledger
           </button>
           <button
-            onClick={() => setActiveTab('chat')}
-            className={`whitespace-nowrap px-2.5 py-1 text-xs font-medium rounded-md ${activeTab === 'chat' ? 'bg-emerald-600 text-white' : 'text-slate-300'}`}
+            onClick={() => setActiveTab('statutes-dashboard')}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'statutes-dashboard' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
           >
-            Chat
+            Statutes
           </button>
-
+          <button
+            onClick={() => setActiveTab('chat')}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'chat' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
+          >
+            Legal Chat
+          </button>
+          <button
+            onClick={() => setActiveTab('super-tax')}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'super-tax' ? 'bg-amber-600 text-slate-950 font-bold shadow-sm' : 'bg-slate-800/80 text-amber-300 hover:bg-slate-800'}`}
+          >
+            Super Tax
+          </button>
           <button
             onClick={() => setActiveTab('sales-tax-engine')}
-            className={`whitespace-nowrap px-2.5 py-1 text-xs font-medium rounded-md ${activeTab === 'sales-tax-engine' ? 'bg-emerald-600 text-white' : 'text-slate-300'}`}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'sales-tax-engine' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
           >
             Sales Tax 1990
           </button>
           <button
             onClick={() => setActiveTab('calculator')}
-            className={`whitespace-nowrap px-2.5 py-1 text-xs font-medium rounded-md ${activeTab === 'calculator' ? 'bg-emerald-600 text-white' : 'text-slate-300'}`}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'calculator' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
           >
             Tax Calc
           </button>
           <button
             onClick={() => setActiveTab('notice')}
-            className={`whitespace-nowrap px-2.5 py-1 text-xs font-medium rounded-md ${activeTab === 'notice' ? 'bg-emerald-600 text-white' : 'text-slate-300'}`}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'notice' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
           >
             Notice Reply
           </button>
           <button
             onClick={() => setActiveTab('directory')}
-            className={`whitespace-nowrap px-2.5 py-1 text-xs font-medium rounded-md ${activeTab === 'directory' ? 'bg-emerald-600 text-white' : 'text-slate-300'}`}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'directory' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
           >
             Sales Tax & ATL
           </button>
           <button
             onClick={() => setActiveTab('analyzer')}
-            className={`whitespace-nowrap px-2.5 py-1 text-xs font-medium rounded-md ${activeTab === 'analyzer' ? 'bg-emerald-600 text-white' : 'text-slate-300'}`}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'analyzer' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
           >
             Audit
           </button>
           <button
             onClick={() => setActiveTab('pricing')}
-            className={`whitespace-nowrap px-2.5 py-1 text-xs font-medium rounded-md ${activeTab === 'pricing' ? 'bg-emerald-600 text-white' : 'text-slate-300'}`}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'pricing' ? 'bg-emerald-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
           >
             Tiers
           </button>
           <button
             onClick={() => setActiveTab('architecture')}
-            className={`whitespace-nowrap px-2.5 py-1 text-xs font-medium rounded-md ${activeTab === 'architecture' ? 'bg-indigo-600 text-white' : 'text-slate-300'}`}
+            className={`whitespace-nowrap px-3 py-1.5 text-xs font-medium rounded-lg shrink-0 transition ${activeTab === 'architecture' ? 'bg-indigo-600 text-white shadow-sm' : 'bg-slate-800/80 text-slate-300 hover:bg-slate-800'}`}
           >
             Code
           </button>
